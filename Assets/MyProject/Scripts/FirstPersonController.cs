@@ -121,6 +121,7 @@ namespace StarterAssets
 			JumpAndGravity();
 			GroundedCheck();
 			Move();
+
 			if(_input.jump)
 			{
 				playerSound[1].Play();
