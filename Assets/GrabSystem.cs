@@ -18,25 +18,31 @@ public class GrabSystem : MonoBehaviour
 
     private void Update()
     {
-        if (_input.pick && !pickedItem)
+        if (_input.pick)
         {
-            var ray = characterCamera.ViewportPointToRay(Vector3.one * 0.5f);
-            RaycastHit hit;
-
-            if (Physics.Raycast(ray, out hit, 3.0f))
+            if(!pickedItem)
             {
-                var pickable = hit.transform.GetComponent<PickableItem>();
+                var ray = characterCamera.ViewportPointToRay(Vector3.one * 0.5f);
+                RaycastHit hit;
 
-                if (pickable)
+                if(Physics.Raycast(ray, out hit, 2.0f))
                 {
-                    PickItem(pickable);
+                    var pickable = hit.transform.GetComponent<PickableItem>();
+
+                    if(pickable)
+                    {
+                        PickItem(pickable);
+                    }
                 }
             }
         }
         
-        if(_input.drop && pickedItem)
+        if(_input.drop)
         {
-            DropItem(pickedItem);
+            if(pickedItem)
+            {
+                DropItem(pickedItem);
+            }
         }
     }
 
@@ -45,14 +51,11 @@ public class GrabSystem : MonoBehaviour
         pickedItem = item;
 
         item.Rb.isKinematic = true;
-        item.Rb.velocity = Vector3.zero;
-        item.Rb.angularVelocity = Vector3.zero;
 
         item.transform.SetParent(slot);
 
         item.transform.localPosition = Vector3.zero;
         item.transform.localEulerAngles = Vector3.zero;
-
     }
 
     private void DropItem(PickableItem item)
