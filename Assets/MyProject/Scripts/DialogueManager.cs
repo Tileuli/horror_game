@@ -41,7 +41,7 @@ namespace StarterAssets
                         }
                     }
 
-                    yield return new WaitForSeconds(2.0f);
+                    yield return new WaitForSeconds(1.5f);
                     dialogueText.text = string.Empty;
                     lines[index] = "";
                 }
