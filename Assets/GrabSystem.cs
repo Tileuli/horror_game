@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-namespace StarterAssets
-{
 public class GrabSystem : MonoBehaviour
 {
     [SerializeField]
@@ -13,12 +11,11 @@ public class GrabSystem : MonoBehaviour
     [SerializeField]
     private Transform slot;
     private PickableItem pickedItem;
-    public StarterAssetsInputs _input;
 
 
     private void Update()
     {
-        if (_input.pick)
+        if (Input.GetKeyDown(KeyCode.E))
         {
             if(!pickedItem)
             {
@@ -37,7 +34,7 @@ public class GrabSystem : MonoBehaviour
             }
         }
         
-        if(_input.drop)
+        if(Input.GetKeyDown(KeyCode.G))
         {
             if(pickedItem)
             {
@@ -49,6 +46,7 @@ public class GrabSystem : MonoBehaviour
     private void PickItem(PickableItem item)
     {
         pickedItem = item;
+        item.GetComponent<Collider>().enabled = false;
 
         item.Rb.isKinematic = true;
 
@@ -61,6 +59,7 @@ public class GrabSystem : MonoBehaviour
     private void DropItem(PickableItem item)
     {
         pickedItem = null;
+        item.GetComponent<Collider>().enabled = true;
 
         item.transform.SetParent(null);
 
@@ -68,5 +67,4 @@ public class GrabSystem : MonoBehaviour
 
         item.Rb.AddForce(item.transform.forward * 2, ForceMode.VelocityChange);
     }
-}
 }
