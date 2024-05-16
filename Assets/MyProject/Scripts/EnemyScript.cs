@@ -17,7 +17,9 @@ public class EnemyScript : MonoBehaviour
     private NavMeshAgent nav;
     private int destPoint = 0;
 
-    private bool isAttacking = false;
+    public float damageRate = 1f;
+
+    private float lastDamageTime;
 
     private void Start()
     {
@@ -28,19 +30,16 @@ public class EnemyScript : MonoBehaviour
     {
         float distance = Vector3.Distance(player.position, transform.position);
 
-        if(!isAttacking)
+        if(distance < chaseRange)
         {
-            if(distance < chaseRange)
-            {
-                ChasePlayer();
-            }
-            else
-            {
-                Patrolling();
-            }
-        
-            PlayerDamage(distance);
+            ChasePlayer();
         }
+        else
+        {
+            Patrolling();
+        }
+        
+        PlayerDamage(distance);
     }
 
     void GoToNextPoint()
@@ -51,30 +50,15 @@ public class EnemyScript : MonoBehaviour
 
     private void PlayerDamage(float distance)
     {
-        if (!isAttacking)
+        if (Time.time - lastDamageTime > damageRate)
         {
             if (distance < damageRange)
             {
-                isAttacking = true;
+                playerHealth.TakeDamage(damage);
 
-                animator.SetBool("isAttacking", true);
-
-                StartCoroutine(AttackCooldown());
+                lastDamageTime = Time.time;
             }
         }
-    }
-
-    private IEnumerator AttackCooldown()
-    {
-        yield return new WaitForSeconds(1.0f);
-
-        playerHealth.TakeDamage(damage);
-
-        yield return new WaitForSeconds(1.0f);
-
-        isAttacking = false;
-
-        animator.SetBool("isAttacking", false);
     }
 
     private void Patrolling()
@@ -90,7 +74,7 @@ public class EnemyScript : MonoBehaviour
     private void ChasePlayer()
     {
         nav.isStopped = false;
-        nav.SetDestination(player.position + player.forward * 1.7f);
+        nav.SetDestination(player.position);
 
         animator.SetBool("isRunning", true);
     }
