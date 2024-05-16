@@ -17,7 +17,6 @@ public class EnemyScript : MonoBehaviour
     private NavMeshAgent nav;
     private int destPoint = 0;
 
-    public float damageRate = 1f;
     private bool isAttacking = false;
 
     private void Start()
@@ -67,7 +66,7 @@ public class EnemyScript : MonoBehaviour
 
     private IEnumerator AttackCooldown()
     {
-        yield return new WaitForSeconds(1.5f);
+        yield return new WaitForSeconds(1.0f);
 
         playerHealth.TakeDamage(damage);
 
@@ -91,7 +90,7 @@ public class EnemyScript : MonoBehaviour
     private void ChasePlayer()
     {
         nav.isStopped = false;
-        nav.SetDestination(player.position + player.forward * 1.5f);
+        nav.SetDestination(player.position + player.forward * 1.7f);
 
         animator.SetBool("isRunning", true);
     }
