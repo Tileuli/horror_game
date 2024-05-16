@@ -1,19 +1,25 @@
+using System.Collections;
+using UnityEngine.SceneManagement;
 using UnityEngine;
 using UnityEngine.AI;
-using UnityEngine.SceneManagement;
-using System.Collections;
 
 public class EnemyScript : MonoBehaviour
 {
     public Transform player;
+    public PlayerHealth playerHealth;
+    public int damage = 25;
     public Animator animator;
 
     public float chaseRange = 10f;
-    public float deathRange = .75f;
+    public float damageRange = 1.0f;
     public Transform[] points;
 
     private NavMeshAgent nav;
     private int destPoint = 0;
+
+    public float damageRate = 1f;
+
+    private float lastDamageTime;
 
     private void Start()
     {
@@ -33,7 +39,7 @@ public class EnemyScript : MonoBehaviour
             Patrolling();
         }
         
-        PlayerDeath(distance);
+        PlayerDamage(distance);
     }
 
     void GoToNextPoint()
@@ -42,11 +48,16 @@ public class EnemyScript : MonoBehaviour
         destPoint = (destPoint + 1) % points.Length;
     }
 
-    private void PlayerDeath(float distance)
+    private void PlayerDamage(float distance)
     {
-        if (distance < deathRange)
+        if (Time.time - lastDamageTime > damageRate)
         {
-            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+            if (distance < damageRange)
+            {
+                playerHealth.TakeDamage(damage);
+
+                lastDamageTime = Time.time;
+            }
         }
     }
 
