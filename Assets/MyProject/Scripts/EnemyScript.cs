@@ -18,8 +18,7 @@ public class EnemyScript : MonoBehaviour
     private int destPoint = 0;
 
     public float damageRate = 1f;
-
-    private float lastDamageTime;
+    private bool isAttacking = false;
 
     private void Start()
     {
@@ -30,16 +29,19 @@ public class EnemyScript : MonoBehaviour
     {
         float distance = Vector3.Distance(player.position, transform.position);
 
-        if(distance < chaseRange)
+        if(!isAttacking)
         {
-            ChasePlayer();
-        }
-        else
-        {
-            Patrolling();
-        }
+            if(distance < chaseRange)
+            {
+                ChasePlayer();
+            }
+            else
+            {
+                Patrolling();
+            }
         
-        PlayerDamage(distance);
+            PlayerDamage(distance);
+        }
     }
 
     void GoToNextPoint()
@@ -50,15 +52,30 @@ public class EnemyScript : MonoBehaviour
 
     private void PlayerDamage(float distance)
     {
-        if (Time.time - lastDamageTime > damageRate)
+        if (!isAttacking)
         {
             if (distance < damageRange)
             {
-                playerHealth.TakeDamage(damage);
+                isAttacking = true;
 
-                lastDamageTime = Time.time;
+                animator.SetBool("isAttacking", true);
+
+                StartCoroutine(AttackCooldown());
             }
         }
+    }
+
+    private IEnumerator AttackCooldown()
+    {
+        yield return new WaitForSeconds(1.5f);
+
+        playerHealth.TakeDamage(damage);
+
+        yield return new WaitForSeconds(1.0f);
+
+        isAttacking = false;
+
+        animator.SetBool("isAttacking", false);
     }
 
     private void Patrolling()
@@ -74,7 +91,7 @@ public class EnemyScript : MonoBehaviour
     private void ChasePlayer()
     {
         nav.isStopped = false;
-        nav.SetDestination(player.position);
+        nav.SetDestination(player.position + player.forward * 1.5f);
 
         animator.SetBool("isRunning", true);
     }
