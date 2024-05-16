@@ -7,16 +7,13 @@ using UnityEngine;
 
 public class PickableItem : MonoBehaviour
 {
-    // Reference to the rigidbody
+    public Texture2D texture;
+    [TextArea(2, 10)] public string description;
     private Rigidbody rb;
     public Rigidbody Rb => rb;
 
-    /// <summary>
-    /// Method called on initialization.
-    /// </summary>
     private void Awake()
     {
-        // Get reference to the rigidbody
         rb = GetComponent<Rigidbody>();
     }
 }
