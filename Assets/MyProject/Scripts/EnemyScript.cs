@@ -2,6 +2,7 @@ using System.Collections;
 using UnityEngine.SceneManagement;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.InputSystem;
 
 public class EnemyScript : MonoBehaviour
 {
@@ -66,11 +67,13 @@ public class EnemyScript : MonoBehaviour
 
     private IEnumerator AttackCooldown()
     {
-        yield return new WaitForSeconds(1.0f);
+        player.GetComponent<PlayerInput>().enabled = false;
+        yield return new WaitForSeconds(1.2f);
 
+        player.GetComponent<PlayerInput>().enabled = true;
         playerHealth.TakeDamage(damage);
 
-        yield return new WaitForSeconds(1.0f);
+        yield return new WaitForSeconds(0.8f);
 
         isAttacking = false;
 
@@ -90,7 +93,7 @@ public class EnemyScript : MonoBehaviour
     private void ChasePlayer()
     {
         nav.isStopped = false;
-        nav.SetDestination(player.position + player.forward * 1.7f);
+        nav.SetDestination(player.position + player.forward * 1.5f);
 
         animator.SetBool("isRunning", true);
     }

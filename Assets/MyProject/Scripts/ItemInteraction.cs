@@ -1,62 +1,36 @@
 using UnityEngine;
-using TMPro;
+using UnityEngine.UI;
 using UnityEngine.InputSystem;
 
+namespace StarterAssets
+{
 public class ItemInteraction : MonoBehaviour
 {
-    public Transform player;
-    public float interactionDistance = 2f;
-    public TextMeshProUGUI interactionText;
-    public TextMeshProUGUI scoreText;
-    public TextMeshProUGUI win;
-    public GameObject portal;
-    public int score = 0;
-
+    [SerializeField]private Camera characterCamera;
+    public GameObject guideUI;
 
     void Update()
     {
-        Collider[] hitColliders = Physics.OverlapSphere(player.position, interactionDistance);
+        var ray = characterCamera.ViewportPointToRay(new Vector3(0.5f, 0.49f, 0.5f));
+        RaycastHit hit;
 
-        foreach (Collider collider in hitColliders)
+        if(Physics.Raycast(ray, out hit, 2.0f))
         {
-            if (collider.CompareTag("Item"))
+            if (hit.collider.TryGetComponent(out NoteItem item))
             {
-                Vector3 directionToItem = (collider.transform.position - player.position).normalized;
-                if (Vector3.Dot(player.forward, directionToItem) > 0.5f)
-                {
-                    interactionText.text = "Press E to collect";
-                    interactionText.gameObject.SetActive(true);
+                guideUI.SetActive(true);
 
-                    if (Keyboard.current.eKey.wasPressedThisFrame)
-                    {
-                        CollectItem(collider.gameObject);
-                    }
-                    return;
+                if(Input.GetKeyDown(KeyCode.E))
+                {
+                    guideUI.SetActive(false);
+                    item.Use();
                 }
             }
-            if (collider.CompareTag("End"))
+            else
             {
-                win.text = "YOU WIN";
+                guideUI.SetActive(false);
             }
         }
-
-        interactionText.gameObject.SetActive(false);
     }
-
-    void CollectItem(GameObject item)
-    {
-        score = score + 1;
-        scoreText.text = "Score: " + score + " / 10";
-
-        if (score >= 10)
-        {
-            if (portal != null)
-            {
-                portal.SetActive(true);
-            }
-        }
-
-        Destroy(item);
-        interactionText.gameObject.SetActive(false);
-    }
+}
 }

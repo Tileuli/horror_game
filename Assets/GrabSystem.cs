@@ -10,10 +10,10 @@ public class GrabSystem : MonoBehaviour
     [SerializeField]private Camera characterCamera;
     [SerializeField]private Transform slot;
     [SerializeField] private List<RawImage> itemImages;
-    private List<PickableItem> pickedItem = new List<PickableItem>();
+    public List<PickableItem> pickedItem = new List<PickableItem>();
     public TextMeshProUGUI description;
     public GameObject guideUI;
-    private int selectedItemIndex = -1;
+    public int selectedItemIndex = -1;
 
 
     private void Update()
@@ -132,7 +132,7 @@ public class GrabSystem : MonoBehaviour
         }
     }
 
-    private void DropItem(PickableItem item)
+    public void DropItem(PickableItem item)
     {
         pickedItem[selectedItemIndex] = null;
         itemImages[selectedItemIndex].texture = null;
@@ -166,7 +166,7 @@ public class GrabSystem : MonoBehaviour
     {
         if(index != selectedItemIndex && index < pickedItem.Count)
         {
-            if(pickedItem[index] != null)
+            if(pickedItem[index] != null && pickedItem[selectedItemIndex] != null)
             {
                 pickedItem[selectedItemIndex].gameObject.SetActive(false);
                 itemImages[selectedItemIndex].rectTransform.parent.localScale = Vector3.one;

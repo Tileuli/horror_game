@@ -1,8 +1,5 @@
 using UnityEngine;
 
-/// <summary>
-/// Attach this class to make object pickable.
-/// </summary>
 [RequireComponent(typeof(Rigidbody))]
 
 public class PickableItem : MonoBehaviour

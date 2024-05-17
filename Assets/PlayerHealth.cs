@@ -24,7 +24,7 @@ public class PlayerHealth : MonoBehaviour
         
         if (currentHealth <= 0)
         {
-            Die();
+            StartCoroutine(Die());
         }
     }
 
@@ -33,8 +33,9 @@ public class PlayerHealth : MonoBehaviour
         currentHealth = Mathf.Min(currentHealth + healAmount, maxHealth);
     }
 
-    void Die()
+    IEnumerator Die()
     {
+        yield return new WaitForSeconds(1f);
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 }
